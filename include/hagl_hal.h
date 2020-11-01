@@ -43,6 +43,7 @@ extern "C" {
 typedef uint16_t color_t;
 
 #include "hagl_hal_single.h"
+//#include "hagl_hal_double.h"
 
 #define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_BGR)
 #define MIPI_DISPLAY_OFFSET_X       (26)
@@ -62,7 +63,6 @@ typedef uint16_t color_t;
 #define MIPI_DISPLAY_PORT_CLK       (GPIOA)
 #define MIPI_DISPLAY_PIN_MOSI       (GPIO_PIN_7)
 #define MIPI_DISPLAY_PORT_MOSI      (GPIOA)
-
 
 #define MIPI_DISPLAY_PIXEL_FORMAT   (MIPI_DCS_PIXEL_FORMAT_16BIT)
 #define MIPI_DISPLAY_INVERT
