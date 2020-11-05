@@ -9,28 +9,43 @@ HAL for HAGL graphics library for display drivers supporting the [MIPI Display C
 TODO
 
 ```
-Nuclei SDK Build Time: Nov  2 2020, 00:25:18
-Download Mode: FLASHXIP
-CPU Frequency 106920000 Hz
-Hello
-No back buffer
-50498 PIXELS per second, FB 0 FPS
-782 LINES per second, FB 0 FPS
-608 CIRCLES per second, FB 0 FPS
-248 FILLED CIRCLES per second, FB 0 FPS
-399 ELLIPSES per second, FB 0 FPS
-91 FILLED ELLIPSES per second, FB 0 FPS
-259 TRIANGLES per second, FB 0 FPS
-170 FILLED TRIANGLES per second, FB 0 FPS
-2071 RECTANGLES per second, FB 0 FPS
-210 FILLED RECTANGLES per second, FB 0 FPS
-1160 ROUND RECTANGLES per second, FB 0 FPS
-194 FILLED ROUND RECTANGLES per second, FB 0 FPS
-155 POLYGONS per second, FB 0 FPS
-106 FILLED POLYGONS per second, FB 0 FPS
-5555 CHARACTERS per second, FB 0 FPS
-405 STRINGS per second, FB 0 FPS
-29 RGB BARS per second, FB 0 FPS
+/* Single buffered */
+61297 PIXELS per second, FB 0 FPS
+962 LINES per second, FB 0 FPS
+756 CIRCLES per second, FB 0 FPS
+279 FILLED CIRCLES per second, FB 0 FPS
+492 ELLIPSES per second, FB 0 FPS
+100 FILLED ELLIPSES per second, FB 0 FPS
+316 TRIANGLES per second, FB 0 FPS
+189 FILLED TRIANGLES per second, FB 0 FPS
+2295 RECTANGLES per second, FB 0 FPS
+230 FILLED RECTANGLES per second, FB 0 FPS
+1360 ROUND RECTANGLES per second, FB 0 FPS
+223 FILLED ROUND RECTANGLES per second, FB 0 FPS
+193 POLYGONS per second, FB 0 FPS
+114 FILLED POLYGONS per second, FB 0 FPS
+6394 CHARACTERS per second, FB 0 FPS
+480 STRINGS per second, FB 0 FPS
+33 RGB BARS per second, FB 0 FPS
+
+/* Double buffered */
+397087 PIXELS per second, FB 0 FPS
+29462 LINES per second, FB 0 FPS
+24498 CIRCLES per second, FB 0 FPS
+13028 FILLED CIRCLES per second, FB 0 FPS
+13252 ELLIPSES per second, FB 0 FPS
+5228 FILLED ELLIPSES per second, FB 0 FPS
+10316 TRIANGLES per second, FB 0 FPS
+548 FILLED TRIANGLES per second, FB 0 FPS
+18202 RECTANGLES per second, FB 0 FPS
+13733 FILLED RECTANGLES per second, FB 0 FPS
+16931 ROUND RECTANGLES per second, FB 0 FPS
+12097 FILLED ROUND RECTANGLES per second, FB 0 FPS
+6236 POLYGONS per second, FB 0 FPS
+327 FILLED POLYGONS per second, FB 0 FPS
+33755 CHARACTERS per second, FB 0 FPS
+2632 STRINGS per second, FB 0 FPS
+2040 RGB BARS per second, FB 0 FPS
 
 ```
 
