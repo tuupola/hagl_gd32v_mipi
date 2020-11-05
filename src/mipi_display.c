@@ -135,31 +135,31 @@ static void mipi_display_spi_master_init()
     spi_init_struct.endian = SPI_ENDIAN_MSB;
     spi_init(SPI0, &spi_init_struct);
 
-	spi_crc_polynomial_set(SPI0, 7);
-	spi_enable(SPI0);
+    spi_crc_polynomial_set(SPI0, 7);
+    spi_enable(SPI0);
 }
 
 void mipi_display_init()
 {
     uint8_t cmd = 0;
 
-	rcu_periph_clock_enable(RCU_GPIOA);
-	rcu_periph_clock_enable(RCU_GPIOB);
- 	rcu_periph_clock_enable(RCU_AF);
-	rcu_periph_clock_enable(RCU_SPI0);
+    rcu_periph_clock_enable(RCU_GPIOA);
+    rcu_periph_clock_enable(RCU_GPIOB);
+    rcu_periph_clock_enable(RCU_AF);
+    rcu_periph_clock_enable(RCU_SPI0);
 
     /* Init pins. */
     gpio_init(MIPI_DISPLAY_PORT_BL, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_BL);
     gpio_init(MIPI_DISPLAY_PORT_CLK, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_CLK);
     gpio_init(MIPI_DISPLAY_PORT_MOSI, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_MOSI);
-	gpio_init(MIPI_DISPLAY_PORT_CS, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_CS);
-	gpio_init(MIPI_DISPLAY_PORT_DC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_DC);
+    gpio_init(MIPI_DISPLAY_PORT_CS, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_CS);
+    gpio_init(MIPI_DISPLAY_PORT_DC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_DC);
 
     /* Init spi driver. */
     mipi_display_spi_master_init();
     delay_1ms(100);
 
-	gpio_bit_reset(MIPI_DISPLAY_PORT_DC, MIPI_DISPLAY_PIN_DC);
+    gpio_bit_reset(MIPI_DISPLAY_PORT_DC, MIPI_DISPLAY_PIN_DC);
 
     /* Reset the display. */
     if (MIPI_DISPLAY_PIN_RST > 0) {
