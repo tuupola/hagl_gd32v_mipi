@@ -34,19 +34,15 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <FreeRTOS.h>
-#include <semphr.h>
-
+// #include <stdatomic.h>
 
 #include "nuclei_sdk_soc.h"
 
 #include "mipi_dcs.h"
 #include "mipi_display.h"
 
-// static const char *TAG = "mipi_display";
 static const uint8_t DELAY_BIT = 1 << 7;
-
-static SemaphoreHandle_t mutex;
+// static volatile atomic_flag lock = ATOMIC_FLAG_INIT;
 
 static const mipi_init_command_t init_commands[] = {
     {MIPI_DCS_SOFT_RESET, {0}, 0 | DELAY_BIT},
@@ -147,8 +143,6 @@ void mipi_display_init()
 {
     uint8_t cmd = 0;
 
-    mutex = xSemaphoreCreateMutex();
-
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOB);
  	rcu_periph_clock_enable(RCU_AF);
@@ -210,7 +204,9 @@ void mipi_display_write(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint8_
     uint8_t command;
     uint8_t data[4];
 
-    xSemaphoreTake(mutex, portMAX_DELAY);
+    // while (atomic_flag_test_and_set(&lock)) {
+    //     /* NOP */
+    // }
 
     mipi_display_write_command(MIPI_DCS_SET_COLUMN_ADDRESS);
     data[0] = x1 >> 8;
@@ -229,12 +225,14 @@ void mipi_display_write(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint8_
     mipi_display_write_command(MIPI_DCS_WRITE_MEMORY_START);
     mipi_display_write_data(buffer, size * DISPLAY_DEPTH / 8);
 
-    xSemaphoreGive(mutex);
+    // atomic_flag_clear(&lock);
 }
 
 void mipi_display_ioctl(const uint8_t command, uint8_t *data, size_t size)
 {
-    xSemaphoreTake(mutex, portMAX_DELAY);
+    // while (atomic_flag_test_and_set(&lock)) {
+    //     /* NOP */
+    // };
 
     switch (command) {
         case MIPI_DCS_GET_COMPRESSION_MODE:
@@ -263,7 +261,7 @@ void mipi_display_ioctl(const uint8_t command, uint8_t *data, size_t size)
             mipi_display_write_data(data, size);
     }
 
-    xSemaphoreGive(mutex);
+    // atomic_flag_clear(&lock);
 }
 
 void mipi_display_close()
