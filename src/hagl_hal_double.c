@@ -82,6 +82,11 @@ void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
     *ptr = color;
 }
 
+color_t hagl_hal_get_pixel(int16_t x0, int16_t y0)
+{
+    return *(color_t *) (fb.buffer + fb.pitch * y0 + (fb.depth / 8) * x0);
+}
+
 void hagl_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *src)
 {
     bitmap_blit(x0, y0, src, &fb);

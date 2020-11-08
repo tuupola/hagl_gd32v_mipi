@@ -62,6 +62,7 @@ extern "C" {
 #define HAGL_HAS_HAL_HLINE
 #define HAGL_HAS_HAL_VLINE
 #define HAGL_HAS_HAL_FLUSH
+#define HAGL_HAS_HAL_GET_PIXEL
 
 /**
  * Put a pixel
@@ -71,6 +72,18 @@ extern "C" {
  * @param color RGB565 color
  */
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
+
+/**
+ * Get a single pixel
+ *
+ * Input will be clipped to the current clip window. In case of
+ * error or if HAL does not support this feature returns black.
+ *
+ * @param x0
+ * @param y0
+ * @return color at the given location
+ */
+color_t hagl_hal_get_pixel(int16_t x0, int16_t y0);
 
 /**
  * Initialize the HAL
