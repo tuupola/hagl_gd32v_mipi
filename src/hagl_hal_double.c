@@ -47,6 +47,8 @@ valid.
 
 #include <string.h>
 #include <mipi_display.h>
+#include <mipi_dcs.h>
+
 #include <bitmap.h>
 #include <hagl.h>
 

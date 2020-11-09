@@ -42,8 +42,10 @@ extern "C" {
 
 typedef uint16_t color_t;
 
-#include "hagl_hal_single.h"
-//#include "hagl_hal_double.h"
+#include "nuclei_sdk_soc.h"
+
+//#include "hagl_hal_single.h"
+#include "hagl_hal_double.h"
 
 #define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_BGR)
 #define MIPI_DISPLAY_OFFSET_X       (26)

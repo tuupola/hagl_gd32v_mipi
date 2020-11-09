@@ -143,6 +143,7 @@ void mipi_display_init()
 {
     uint8_t cmd = 0;
 
+    /* Enable clocks. */
     rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_AF);
