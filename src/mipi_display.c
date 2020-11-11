@@ -43,6 +43,7 @@ SPDX-License-Identifier: MIT
 
 static const uint8_t DELAY_BIT = 1 << 7;
 // static volatile atomic_flag lock = ATOMIC_FLAG_INIT;
+extern uint8_t buffer[BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH)];
 
 static const mipi_init_command_t init_commands[] = {
     {MIPI_DCS_SOFT_RESET, {0}, 0 | DELAY_BIT},
@@ -79,6 +80,13 @@ static void mipi_display_write_command(const uint8_t command)
     gpio_bit_set(MIPI_DISPLAY_PORT_CS, MIPI_DISPLAY_PIN_CS);
 }
 
+void DMA0_Channel2_IRQHandler(void)
+{
+    dma_interrupt_flag_clear(DMA0, DMA_CH2, DMA_INT_FLAG_G);
+    printf("DMA0_Channel2_IRQHandler()\r\n");
+
+}
+
 static void mipi_display_write_data(const uint8_t *data, size_t length)
 {
     size_t sent = 0;
@@ -86,8 +94,6 @@ static void mipi_display_write_data(const uint8_t *data, size_t length)
     if (0 == length) {
         return;
     };
-
-    // ESP_LOG_BUFFER_HEX_LEVEL(TAG, data, length, ESP_LOG_DEBUG);
 
     /* Set DC */
     gpio_bit_set(MIPI_DISPLAY_PORT_DC, MIPI_DISPLAY_PIN_DC);
@@ -109,6 +115,36 @@ static void mipi_display_write_data(const uint8_t *data, size_t length)
 
         sent = sent + 1;
     }
+}
+
+static void mipi_display_write_data_dma(const uint8_t *data, size_t length)
+{
+    size_t sent = 0;
+
+    if (0 == length) {
+        return;
+    };
+
+    // ESP_LOG_BUFFER_HEX_LEVEL(TAG, data, length, ESP_LOG_DEBUG);
+
+    /* Set DC and CS. */
+    gpio_bit_set(MIPI_DISPLAY_PORT_DC, MIPI_DISPLAY_PIN_DC);
+    gpio_bit_set(MIPI_DISPLAY_PORT_CS, MIPI_DISPLAY_PIN_CS);
+
+    static uint8_t foo = 0xff;
+    dma_channel_disable(DMA0, DMA_CH2);
+    dma_memory_address_config(DMA0, DMA_CH2, (uint32_t)(data));
+    //dma_memory_increase_disable(DMA0, DMA_CH2);
+    dma_transfer_number_config(DMA0, DMA_CH2, length);
+    dma_channel_enable(DMA0, DMA_CH2);
+    spi_dma_enable(SPI0, SPI_DMA_TRANSMIT);
+
+    //while(!dma_flag_get(DMA0, DMA_CH2, DMA_FLAG_FTF));
+
+    /* Unset CS. */
+    gpio_bit_reset(MIPI_DISPLAY_PORT_CS, MIPI_DISPLAY_PIN_CS);
+
+    //printf("mipi_display_write_data_dma(*data, %d)\r\n", length);
 }
 
 static void mipi_display_read_data(uint8_t *data, size_t length)
@@ -142,6 +178,36 @@ static void mipi_display_set_address(uint16_t x1, uint16_t y1, uint16_t x2, uint
     mipi_display_write_data(data, 4);
 
     mipi_display_write_command(MIPI_DCS_WRITE_MEMORY_START);
+}
+
+static void mipi_display_dma_init()
+{
+    dma_parameter_struct dma_init_struct;
+    rcu_periph_clock_enable(RCU_DMA0);
+
+    static uint8_t bar = 0xCC;
+
+    /* SPI0 transmit dma config:DMA0,DMA_CH2 */
+    dma_deinit(DMA0, DMA_CH2);
+    dma_struct_para_init(&dma_init_struct);
+
+    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI0);
+    dma_init_struct.memory_addr  = (uint32_t)NULL;
+    dma_init_struct.direction    = DMA_MEMORY_TO_PERIPHERAL;
+    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
+    dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
+    //dma_init_struct.priority     = DMA_PRIORITY_LOW;
+    dma_init_struct.priority     = DMA_PRIORITY_ULTRA_HIGH;
+    dma_init_struct.number       = BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH);
+    dma_init_struct.periph_inc   = DMA_PERIPH_INCREASE_DISABLE;
+    dma_init_struct.memory_inc   = DMA_MEMORY_INCREASE_ENABLE;
+    dma_init(DMA0, DMA_CH2, &dma_init_struct);
+
+    /* configure DMA mode */
+    dma_circulation_disable(DMA0, DMA_CH2);
+    dma_memory_to_memory_disable(DMA0, DMA_CH2);
+
+    printf("mipi_display_dma_init()\r\n");
 }
 
 static void mipi_display_spi_master_init()
@@ -213,6 +279,7 @@ void mipi_display_init()
     }
 
     mipi_display_set_address(0, 0, MIPI_DISPLAY_WIDTH - 1, MIPI_DISPLAY_HEIGHT - 1);
+    mipi_display_dma_init(); // DMA
 
     // ESP_LOGI(TAG, "Display initialized.");
 }
@@ -231,11 +298,32 @@ void mipi_display_write(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint8_
     //     /* NOP */
     // }
 
-    mipi_display_set_address(x1, y1, x2, y2);
+    //mipi_display_set_address(x1, y1, x2, y2);
     mipi_display_write_data(buffer, size * DISPLAY_DEPTH / 8);
 
     // atomic_flag_clear(&lock);
 }
+
+void mipi_display_write_dma(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint8_t *buffer)
+{
+    if (0 == w || 0 == h) {
+        return;
+    }
+
+    int32_t x2 = x1 + w - 1;
+    int32_t y2 = y1 + h - 1;
+    uint32_t size = w * h;
+
+    // while (atomic_flag_test_and_set(&lock)) {
+    //     /* NOP */
+    // }
+
+    //mipi_display_set_address(x1, y1, x2, y2);
+    mipi_display_write_data_dma(buffer, size * DISPLAY_DEPTH / 8);
+
+    // atomic_flag_clear(&lock);
+}
+
 
 void mipi_display_ioctl(const uint8_t command, uint8_t *data, size_t size)
 {
