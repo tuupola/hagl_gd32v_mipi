@@ -118,6 +118,32 @@ static void mipi_display_read_data(uint8_t *data, size_t length)
     };
 }
 
+static void mipi_display_set_address(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+    x1 = x1 + MIPI_DISPLAY_OFFSET_X;
+    y1 = y1 + MIPI_DISPLAY_OFFSET_Y;
+    x2 = x2 + MIPI_DISPLAY_OFFSET_X;
+    y2 = y2 + MIPI_DISPLAY_OFFSET_Y;
+
+    uint8_t command;
+    uint8_t data[4];
+
+    mipi_display_write_command(MIPI_DCS_SET_COLUMN_ADDRESS);
+    data[0] = x1 >> 8;
+    data[1] = x1 & 0xff;
+    data[2] = x2 >> 8;
+    data[3] = x2 & 0xff;
+    mipi_display_write_data(data, 4);
+
+    mipi_display_write_command(MIPI_DCS_SET_PAGE_ADDRESS);
+    data[0] = y1 >> 8;
+    data[1] = y1 & 0xff;
+    data[2] = y2 >> 8;
+    data[3] = y2 & 0xff;
+    mipi_display_write_data(data, 4);
+
+    mipi_display_write_command(MIPI_DCS_WRITE_MEMORY_START);
+}
+
 static void mipi_display_spi_master_init()
 {
     spi_parameter_struct spi_init_struct;
@@ -186,6 +212,8 @@ void mipi_display_init()
         gpio_bit_set(MIPI_DISPLAY_PORT_BL, MIPI_DISPLAY_PIN_BL);
     }
 
+    mipi_display_set_address(0, 0, MIPI_DISPLAY_WIDTH - 1, MIPI_DISPLAY_HEIGHT - 1);
+
     // ESP_LOGI(TAG, "Display initialized.");
 }
 
@@ -195,35 +223,15 @@ void mipi_display_write(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint8_
         return;
     }
 
-    x1 = x1 + MIPI_DISPLAY_OFFSET_X;
-    y1 = y1 + MIPI_DISPLAY_OFFSET_Y;
-
     int32_t x2 = x1 + w - 1;
     int32_t y2 = y1 + h - 1;
     uint32_t size = w * h;
-
-    uint8_t command;
-    uint8_t data[4];
 
     // while (atomic_flag_test_and_set(&lock)) {
     //     /* NOP */
     // }
 
-    mipi_display_write_command(MIPI_DCS_SET_COLUMN_ADDRESS);
-    data[0] = x1 >> 8;
-    data[1] = x1 & 0xff;
-    data[2] = x2 >> 8;
-    data[3] = x2 & 0xff;
-    mipi_display_write_data(data, 4);
-
-    mipi_display_write_command(MIPI_DCS_SET_PAGE_ADDRESS);
-    data[0] = y1 >> 8;
-    data[1] = y1 & 0xff;
-    data[2] = y2 >> 8;
-    data[3] = y2 & 0xff;
-    mipi_display_write_data(data, 4);
-
-    mipi_display_write_command(MIPI_DCS_WRITE_MEMORY_START);
+    mipi_display_set_address(x1, y1, x2, y2);
     mipi_display_write_data(buffer, size * DISPLAY_DEPTH / 8);
 
     // atomic_flag_clear(&lock);
