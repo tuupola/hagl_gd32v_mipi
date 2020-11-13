@@ -122,7 +122,7 @@ static void mipi_display_write_data_dma(const uint8_t *buffer, size_t length)
     dma_channel_disable(DMA0, DMA_CH2);
     dma_memory_address_config(DMA0, DMA_CH2, (uint32_t)(buffer));
 
-    /* Smells like off by one error somewhere. */
+    /* Smells like off by one error somewhere? */
     dma_transfer_number_config(DMA0, DMA_CH2, length - 1);
 
     /* Set CS low to reserve the SPI bus. */
@@ -138,13 +138,13 @@ static void mipi_display_read_data(uint8_t *data, size_t length)
 }
 
 static void mipi_display_set_address(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+    uint8_t command;
+    uint8_t data[4];
+
     x1 = x1 + MIPI_DISPLAY_OFFSET_X;
     y1 = y1 + MIPI_DISPLAY_OFFSET_Y;
     x2 = x2 + MIPI_DISPLAY_OFFSET_X;
     y2 = y2 + MIPI_DISPLAY_OFFSET_Y;
-
-    uint8_t command;
-    uint8_t data[4];
 
     mipi_display_write_command(MIPI_DCS_SET_COLUMN_ADDRESS);
     data[0] = x1 >> 8;
@@ -166,13 +166,11 @@ static void mipi_display_set_address(uint16_t x1, uint16_t y1, uint16_t x2, uint
 static void mipi_display_dma_init()
 {
     dma_parameter_struct dma_config;
+
     rcu_periph_clock_enable(RCU_DMA0);
-
-    static uint8_t bar = 0xCC;
-
     dma_deinit(DMA0, DMA_CH2);
-    dma_struct_para_init(&dma_config);
 
+    dma_struct_para_init(&dma_config);
     dma_config.periph_addr = (uint32_t)&SPI_DATA(SPI0);
     dma_config.memory_addr = (uint32_t)NULL;
     dma_config.direction = DMA_MEMORY_TO_PERIPHERAL;
