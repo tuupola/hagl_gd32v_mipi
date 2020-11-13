@@ -51,6 +51,7 @@ extern "C" {
 #include <bitmap.h>
 
 #define HAGL_HAL_NO_BUFFERING
+#define HAGL_HAL_USE_SINGLE_BUFFER
 
 #include "hagl_hal.h"
 
