@@ -55,9 +55,7 @@ valid.
 #include <stdio.h>
 #include <stdlib.h>
 
-//static uint8_t *buffer;
-// static uint8_t buffer[BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH)];
-uint8_t buffer[BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH)];
+static uint8_t buffer[BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH)];
 
 static bitmap_t fb = {
     .width = DISPLAY_WIDTH,
@@ -76,8 +74,7 @@ bitmap_t *hagl_hal_init(void)
 void hagl_hal_flush()
 {
     /* Flush the whole back buffer. */
-    mipi_display_write_dma(0, 0, fb.width, fb.height, (uint8_t *) fb.buffer);
-    //mipi_display_write(0, 0, fb.width, fb.height, (uint8_t *) fb.buffer);
+    mipi_display_write(0, 0, fb.width, fb.height, (uint8_t *) fb.buffer);
 }
 
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
