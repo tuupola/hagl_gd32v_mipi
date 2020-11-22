@@ -42,7 +42,7 @@ valid.
 
 #include "hagl_hal.h"
 
-#ifdef HAGL_HAL_NO_BUFFERING
+#ifdef HAGL_HAL_USE_SINGLE_BUFFER
 
 #include <bitmap.h>
 #include <hagl.h>
@@ -91,4 +91,4 @@ void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t height, color_t color)
     mipi_display_write(x0, y0, width, height, (uint8_t *) line);
 }
 
-#endif /* CONFIG_HAGL_HAL_NO_BUFFERING */
+#endif /* HAGL_HAL_USE_SINGLE_BUFFER */
