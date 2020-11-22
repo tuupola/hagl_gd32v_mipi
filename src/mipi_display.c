@@ -277,7 +277,7 @@ void mipi_display_write(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint8_
 
 #ifdef HAGL_HAL_USE_DOUBLE_BUFFER
     mipi_display_write_data_dma(buffer, size * DISPLAY_DEPTH / 8);
-#endif /* HAGL_HAL_SINGLE_BUFFER */
+#endif /* HAGL_HAL_USE_DOUBLE_BUFFER */
 }
 
 /* TODO: This most likely does not work with dma atm. */
