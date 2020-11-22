@@ -43,7 +43,7 @@ valid.
 
 #include "hagl_hal.h"
 
-#ifdef HAGL_HAL_USE_DOUBLE_BUFFERING
+#ifdef HAGL_HAL_USE_DOUBLE_BUFFER
 
 #include <string.h>
 #include <mipi_display.h>
@@ -55,7 +55,6 @@ valid.
 #include <stdio.h>
 #include <stdlib.h>
 
-//static uint8_t *buffer;
 static uint8_t buffer[BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH)];
 
 static bitmap_t fb = {
@@ -116,4 +115,4 @@ void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t height, color_t color)
     }
 }
 
-#endif /* HAGL_HAL_USE_DOUBLE_BUFFERING */
+#endif /* HAGL_HAL_USE_DOUBLE_BUFFER */
