@@ -50,31 +50,69 @@ typedef uint16_t color_t;
 #include "hagl_hal_single.h"
 #endif
 
-
+/* Default config is ok for Longan Nano. When compiling you */
+/* can override these by including an user config header */
+/* file first. */
+#ifndef MIPI_DISPLAY_ADDRESS_MODE
 #define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_BGR)
+#endif
+#ifndef MIPI_DISPLAY_OFFSET_X
 #define MIPI_DISPLAY_OFFSET_X       (26)
+#endif
+#ifndef MIPI_DISPLAY_OFFSET_Y
 #define MIPI_DISPLAY_OFFSET_Y       (1)
-
+#endif
+#ifndef MIPI_DISPLAY_PIN_CS
 #define MIPI_DISPLAY_PIN_CS         (GPIO_PIN_2)
+#endif
+#ifndef MIPI_DISPLAY_PORT_CS
 #define MIPI_DISPLAY_PORT_CS        (GPIOB)
+#endif
+#ifndef MIPI_DISPLAY_PIN_DC
 #define MIPI_DISPLAY_PIN_DC         (GPIO_PIN_0)
+#endif
+#ifndef MIPI_DISPLAY_PORT_DC
 #define MIPI_DISPLAY_PORT_DC        (GPIOB)
-//#define MIPI_DISPLAY_PIN_RST        (-1)
+#endif
+#ifndef MIPI_DISPLAY_PIN_RST
 #define MIPI_DISPLAY_PIN_RST        (GPIO_PIN_1)
+#endif
+#ifndef MIPI_DISPLAY_PORT_RST
 #define MIPI_DISPLAY_PORT_RST       (GPIOB)
-//#define MIPI_DISPLAY_PIN_BL         (-1)
+#endif
+#ifndef MIPI_DISPLAY_PIN_BL
 #define MIPI_DISPLAY_PIN_BL         (GPIO_PIN_5)
+#endif
+#ifndef MIPI_DISPLAY_PORT_BL
 #define MIPI_DISPLAY_PORT_BL        (GPIOA)
+#endif
+#ifndef MIPI_DISPLAY_PIN_CLK
 #define MIPI_DISPLAY_PIN_CLK        (GPIO_PIN_6)
+#endif
+#ifndef MIPI_DISPLAY_PORT_CLK
 #define MIPI_DISPLAY_PORT_CLK       (GPIOA)
+#endif
+#ifndef MIPI_DISPLAY_PIN_MOSI
 #define MIPI_DISPLAY_PIN_MOSI       (GPIO_PIN_7)
+#endif
+#ifndef MIPI_DISPLAY_PORT_MOSI
 #define MIPI_DISPLAY_PORT_MOSI      (GPIOA)
-
+#endif
+#ifndef MIPI_DISPLAY_PIXEL_FORMAT
 #define MIPI_DISPLAY_PIXEL_FORMAT   (MIPI_DCS_PIXEL_FORMAT_16BIT)
+#endif
+#ifndef MIPI_DISPLAY_INVERT
 #define MIPI_DISPLAY_INVERT
+#endif
+#ifndef MIPI_DISPLAY_WIDTH
 #define MIPI_DISPLAY_WIDTH          (80)
+#endif
+#ifndef MIPI_DISPLAY_HEIGHT
 #define MIPI_DISPLAY_HEIGHT         (160)
+#endif
+#ifndef MIPI_DISPLAY_DEPTH
 #define MIPI_DISPLAY_DEPTH          (16)
+#endif
 
 #define DISPLAY_WIDTH               (MIPI_DISPLAY_WIDTH)
 #define DISPLAY_HEIGHT              (MIPI_DISPLAY_HEIGHT)
