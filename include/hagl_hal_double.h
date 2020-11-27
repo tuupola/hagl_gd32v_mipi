@@ -51,7 +51,10 @@ extern "C" {
 #include <stdint.h>
 #include <bitmap.h>
 
+/* Define if header file included directly. */
+#ifndef HAGL_HAL_USE_DOUBLE_BUFFER
 #define HAGL_HAL_USE_DOUBLE_BUFFER
+#endif /* HAGL_HAL_USE_DOUBLE_BUFFER */
 
 #include "hagl_hal.h"
 

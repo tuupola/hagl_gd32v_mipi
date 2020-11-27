@@ -44,8 +44,12 @@ typedef uint16_t color_t;
 
 #include "nuclei_sdk_soc.h"
 
-//#include "hagl_hal_single.h"
+#ifdef HAGL_HAL_USE_DOUBLE_BUFFER
 #include "hagl_hal_double.h"
+#else
+#include "hagl_hal_single.h"
+#endif
+
 
 #define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_BGR)
 #define MIPI_DISPLAY_OFFSET_X       (26)
