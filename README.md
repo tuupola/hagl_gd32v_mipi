@@ -10,7 +10,7 @@ To use with an Nuclei SDK project you include this HAL and the [HAGL graphics li
 
 ```
 $ cd lib
-$ git submodule add git@github.com:tuupola/hagl_gs32v_mipi.git hagl_hal
+$ git submodule add git@github.com:tuupola/hagl_gd32v_mipi.git hagl_hal
 $ git submodule add git@github.com:tuupola/hagl.git
 ```
 
