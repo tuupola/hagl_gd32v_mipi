@@ -71,10 +71,11 @@ bitmap_t *hagl_hal_init(void)
     return &fb;
 }
 
-void hagl_hal_flush()
+size_t hagl_hal_flush()
 {
     /* Flush the whole back buffer. */
     mipi_display_write(0, 0, fb.width, fb.height, (uint8_t *) fb.buffer);
+    return bitmap_size(&fb);
 }
 
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
