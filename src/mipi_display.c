@@ -249,6 +249,7 @@ void mipi_display_init()
 
     /* Enable backlight */
     if (MIPI_DISPLAY_PIN_BL > 0) {
+        gpio_init(MIPI_DISPLAY_PORT_BL, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_BL);
         gpio_bit_set(MIPI_DISPLAY_PORT_BL, MIPI_DISPLAY_PIN_BL);
     }
 
