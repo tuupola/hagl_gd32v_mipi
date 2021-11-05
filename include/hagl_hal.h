@@ -54,18 +54,23 @@ typedef uint16_t color_t;
 /* can override these by including an user config header */
 /* file first. */
 #ifndef MIPI_DISPLAY_ADDRESS_MODE
-#define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_BGR)
+//#define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_BGR)
+#define MIPI_DISPLAY_ADDRESS_MODE   (MIPI_DCS_ADDRESS_MODE_RGB)
 #endif
 #ifndef MIPI_DISPLAY_OFFSET_X
-#define MIPI_DISPLAY_OFFSET_X       (26)
+//#define MIPI_DISPLAY_OFFSET_X       (26)
+#define MIPI_DISPLAY_OFFSET_X       (52)
 #endif
 #ifndef MIPI_DISPLAY_OFFSET_Y
-#define MIPI_DISPLAY_OFFSET_Y       (1)
+//#define MIPI_DISPLAY_OFFSET_Y       (1)
+#define MIPI_DISPLAY_OFFSET_Y       (40)
 #endif
 #ifndef MIPI_DISPLAY_PIN_CS
 #define MIPI_DISPLAY_PIN_CS         (GPIO_PIN_2)
+//#define MIPI_DISPLAY_PIN_CS         (GPIO_PIN_4)
 #endif
 #ifndef MIPI_DISPLAY_PORT_CS
+//#define MIPI_DISPLAY_PORT_CS        (GPIOA)
 #define MIPI_DISPLAY_PORT_CS        (GPIOB)
 #endif
 #ifndef MIPI_DISPLAY_PIN_DC
@@ -81,13 +86,16 @@ typedef uint16_t color_t;
 #define MIPI_DISPLAY_PORT_RST       (GPIOB)
 #endif
 #ifndef MIPI_DISPLAY_PIN_BL
-#define MIPI_DISPLAY_PIN_BL         (GPIO_PIN_5)
+//#define MIPI_DISPLAY_PIN_BL         (GPIO_PIN_5)
+#define MIPI_DISPLAY_PIN_BL         (GPIO_PIN_10) // TTGO
 #endif
 #ifndef MIPI_DISPLAY_PORT_BL
-#define MIPI_DISPLAY_PORT_BL        (GPIOA)
+//#define MIPI_DISPLAY_PORT_BL        (GPIOA)
+#define MIPI_DISPLAY_PORT_BL        (GPIOB) // TTGO
 #endif
 #ifndef MIPI_DISPLAY_PIN_CLK
-#define MIPI_DISPLAY_PIN_CLK        (GPIO_PIN_6)
+//#define MIPI_DISPLAY_PIN_CLK        (GPIO_PIN_6)
+#define MIPI_DISPLAY_PIN_CLK        (GPIO_PIN_5) // TTGO
 #endif
 #ifndef MIPI_DISPLAY_PORT_CLK
 #define MIPI_DISPLAY_PORT_CLK       (GPIOA)
@@ -105,10 +113,12 @@ typedef uint16_t color_t;
 #define MIPI_DISPLAY_INVERT
 #endif
 #ifndef MIPI_DISPLAY_WIDTH
-#define MIPI_DISPLAY_WIDTH          (80)
+//#define MIPI_DISPLAY_WIDTH          (80)
+#define MIPI_DISPLAY_WIDTH          (135)
 #endif
 #ifndef MIPI_DISPLAY_HEIGHT
-#define MIPI_DISPLAY_HEIGHT         (160)
+//#define MIPI_DISPLAY_HEIGHT         (160)
+#define MIPI_DISPLAY_HEIGHT         (240)
 #endif
 #ifndef MIPI_DISPLAY_DEPTH
 #define MIPI_DISPLAY_DEPTH          (16)
