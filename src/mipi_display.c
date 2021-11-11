@@ -197,7 +197,13 @@ static void mipi_display_spi_master_init()
     rcu_periph_clock_enable(RCU_AF);
     rcu_periph_clock_enable(RCU_SPI0);
 
-    gpio_init(MIPI_DISPLAY_PORT_BL, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_BL);
+    /* Enable backlight */
+    if (MIPI_DISPLAY_PIN_BL > 0) {
+        /* Longan Nano is GPIO_MODE_AF_PP, TTGO T-Display is GPIO_MODE_OUT_PP. */
+        gpio_init(MIPI_DISPLAY_PORT_BL, MIPI_DISPLAY_GPIO_MODE_BL, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_BL);
+        gpio_bit_set(MIPI_DISPLAY_PORT_BL, MIPI_DISPLAY_PIN_BL);
+    }
+
     gpio_init(MIPI_DISPLAY_PORT_CLK, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_CLK);
     gpio_init(MIPI_DISPLAY_PORT_MOSI, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_MOSI);
     gpio_init(MIPI_DISPLAY_PORT_CS, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, MIPI_DISPLAY_PIN_CS);
@@ -245,11 +251,6 @@ void mipi_display_init()
             delay_1ms(200);
         }
         cmd++;
-    }
-
-    /* Enable backlight */
-    if (MIPI_DISPLAY_PIN_BL > 0) {
-        gpio_bit_set(MIPI_DISPLAY_PORT_BL, MIPI_DISPLAY_PIN_BL);
     }
 
     /* Set the default viewport to full screen. */

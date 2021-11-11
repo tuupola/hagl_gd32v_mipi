@@ -86,6 +86,9 @@ typedef uint16_t color_t;
 #ifndef MIPI_DISPLAY_PORT_BL
 #define MIPI_DISPLAY_PORT_BL        (GPIOA)
 #endif
+#ifndef MIPI_DISPLAY_GPIO_MODE_BL
+#define MIPI_DISPLAY_GPIO_MODE_BL   (GPIO_MODE_AF_PP)
+#endif
 #ifndef MIPI_DISPLAY_PIN_CLK
 #define MIPI_DISPLAY_PIN_CLK        (GPIO_PIN_6)
 #endif
