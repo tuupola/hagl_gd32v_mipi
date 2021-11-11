@@ -10,8 +10,8 @@ To use with an Nuclei SDK project you include this HAL and the [HAGL graphics li
 
 ```
 $ cd lib
-$ git submodule add git@github.com:tuupola/hagl_gd32v_mipi.git hagl_hal
-$ git submodule add git@github.com:tuupola/hagl.git
+$ git submodule add https://github.com/tuupola/hagl_gd32v_mipi.git hagl_hal
+$ git submodule add https://github.com/tuupola/hagl.git
 ```
 
 Then in your Makefile include the new source and header files.
