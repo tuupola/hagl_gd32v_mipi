@@ -31,13 +31,13 @@ SPDX-License-Identifier: MIT
 
 -cut-
 
-This is the HAL used when double buffering is enabled. The GRAM of the
-display driver chip is the framebuffer. The memory allocated by this HAL
-is the back buffer. Total two buffers.
+This is the backend when double buffering is enabled. The GRAM of the
+display driver chip is the framebuffer. The memory allocated by the
+backend is the back buffer. Total two buffers.
 
 Note that all coordinates are already clipped in the main library itself.
-HAL does not need to validate the coordinates, they can alway be assumed
-valid.
+Backend does not need to validate the coordinates, they can always be
+assumed to be valid.
 
 */
 
@@ -50,70 +50,96 @@ valid.
 #include <mipi_dcs.h>
 
 #include <bitmap.h>
+#include <backend.h>
 #include <hagl.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-static uint8_t buffer[BITMAP_SIZE(DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_DEPTH)];
+static bitmap_t bb;
 
-static bitmap_t fb = {
-    .width = DISPLAY_WIDTH,
-    .height = DISPLAY_HEIGHT,
-    .depth = DISPLAY_DEPTH,
-};
-
-bitmap_t *hagl_hal_init(void)
-{
-    mipi_display_init();
-    bitmap_init(&fb, buffer);
-
-    return &fb;
-}
-
-size_t hagl_hal_flush()
+static size_t
+flush(void *self)
 {
     /* Flush the whole back buffer. */
-    mipi_display_write(0, 0, fb.width, fb.height, (uint8_t *) fb.buffer);
-    return bitmap_size(&fb);
+    mipi_display_write(0, 0, bb.width, bb.height, (uint8_t *) bb.buffer);
+    return bitmap_size(&bb);
 }
 
-void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
+static void
+put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
 {
-    color_t *ptr = (color_t *) (fb.buffer + fb.pitch * y0 + (fb.depth / 8) * x0);
+    color_t *ptr = (color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
     *ptr = color;
 }
 
-color_t hagl_hal_get_pixel(int16_t x0, int16_t y0)
+static color_t
+get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    return *(color_t *) (fb.buffer + fb.pitch * y0 + (fb.depth / 8) * x0);
+    return *(color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
 }
 
-void hagl_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *src)
+static void
+blit(void *self, int16_t x0, int16_t y0, bitmap_t *src)
 {
-    bitmap_blit(x0, y0, src, &fb);
+    bitmap_blit(x0, y0, src, &bb);
 }
 
-void hagl_hal_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src)
+static void
+scale_blit(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src)
 {
-    bitmap_scale_blit(x0, y0, w, h, src, &fb);
+    bitmap_scale_blit(x0, y0, w, h, src, &bb);
 }
 
-void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t width, color_t color)
+static void
+hline(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color)
 {
-    color_t *ptr = (color_t *) (fb.buffer + fb.pitch * y0 + (fb.depth / 8) * x0);
+    color_t *ptr = (color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
     for (uint16_t x = 0; x < width; x++) {
         *ptr++ = color;
     }
 }
 
-void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t height, color_t color)
+static void
+vline(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color)
 {
-    color_t *ptr = (color_t *) (fb.buffer + fb.pitch * y0 + (fb.depth / 8) * x0);
+    color_t *ptr = (color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
     for (uint16_t y = 0; y < height; y++) {
         *ptr = color;
-        ptr += fb.pitch / (fb.depth / 8);
+        ptr += bb.pitch / (bb.depth / 8);
     }
+}
+
+void
+hagl_hal_init(hagl_backend_t *backend)
+{
+    mipi_display_init();
+
+    if (!backend->buffer) {
+        backend->buffer = calloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8), sizeof(uint8_t));
+        hagl_hal_debug("Allocated back buffer to address %p.\n", (void *) backend->buffer);
+    } else {
+        hagl_hal_debug("Using provided back buffer at address %p.\n", (void *) backend->buffer);
+    }
+
+    memset(&bb, 0, sizeof(bitmap_t));
+    bb.width = DISPLAY_WIDTH;
+    bb.height = DISPLAY_HEIGHT;
+    bb.depth = DISPLAY_DEPTH;
+
+    bitmap_init(&bb, backend->buffer);
+
+    backend->width = MIPI_DISPLAY_WIDTH;
+    backend->height = MIPI_DISPLAY_HEIGHT;
+    backend->depth = MIPI_DISPLAY_DEPTH;
+    backend->put_pixel = put_pixel;
+    backend->get_pixel = get_pixel;
+    backend->hline = hline;
+    backend->vline = vline;
+    backend->blit = blit;
+    // backend->scale_blit = scale_blit;
+
+    backend->flush = flush;
 }
 
 #endif /* HAGL_HAL_USE_DOUBLE_BUFFER */
