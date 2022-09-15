@@ -69,45 +69,37 @@ flush(void *self)
 static void
 put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
 {
-    color_t *ptr = (color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
-    *ptr = color;
+    bb.put_pixel(&bb, x0, y0, color);
 }
 
 static color_t
 get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    return *(color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
+    return bb.get_pixel(&bb, x0, y0);
 }
 
 static void
 blit(void *self, int16_t x0, int16_t y0, bitmap_t *src)
 {
-    bitmap_blit(x0, y0, src, &bb);
+    bb.blit(&bb, x0, y0, src);
 }
 
 static void
 scale_blit(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src)
 {
-    bitmap_scale_blit(x0, y0, w, h, src, &bb);
+    bb.scale_blit(&bb, x0, y0, w, h, src);
 }
 
 static void
 hline(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color)
 {
-    color_t *ptr = (color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
-    for (uint16_t x = 0; x < width; x++) {
-        *ptr++ = color;
-    }
+    bb.hline(&bb, x0, y0, width, color);
 }
 
 static void
 vline(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color)
 {
-    color_t *ptr = (color_t *) (bb.buffer + bb.pitch * y0 + (bb.depth / 8) * x0);
-    for (uint16_t y = 0; y < height; y++) {
-        *ptr = color;
-        ptr += bb.pitch / (bb.depth / 8);
-    }
+    bb.vline(&bb, x0, y0, height, color);
 }
 
 void
@@ -137,7 +129,7 @@ hagl_hal_init(hagl_backend_t *backend)
     backend->hline = hline;
     backend->vline = vline;
     backend->blit = blit;
-    // backend->scale_blit = scale_blit;
+    backend->scale_blit = scale_blit;
 
     backend->flush = flush;
 }
