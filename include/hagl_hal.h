@@ -39,16 +39,16 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-
-typedef uint16_t color_t;
+#include <hagl/backend.h>
+#include <hagl/color.h>
 
 #include "nuclei_sdk_soc.h"
 
-#ifdef HAGL_HAL_USE_DOUBLE_BUFFER
-#include "hagl_hal_double.h"
-#else
-#include "hagl_hal_single.h"
-#endif
+#define HAGL_HAL_DEBUG (1)
+
+#define hagl_hal_debug(fmt, ...) \
+    do { if (HAGL_HAL_DEBUG) printf("[HAGL HAL] " fmt, __VA_ARGS__); } while (0)
+
 
 /* Default config is ok for Longan Nano. When compiling you */
 /* can override these by including an user config header */
@@ -120,6 +120,24 @@ typedef uint16_t color_t;
 #define DISPLAY_WIDTH               (MIPI_DISPLAY_WIDTH)
 #define DISPLAY_HEIGHT              (MIPI_DISPLAY_HEIGHT)
 #define DISPLAY_DEPTH               (MIPI_DISPLAY_DEPTH)
+
+
+#ifdef HAGL_HAL_USE_TRIPLE_BUFFER
+#define HAGL_HAS_HAL_BACK_BUFFER
+#endif
+
+#ifdef HAGL_HAL_USE_DOUBLE_BUFFER
+#define HAGL_HAS_HAL_BACK_BUFFER
+#endif
+
+#ifdef HAGL_HAL_USE_SINGLE_BUFFER
+#undef HAGL_HAS_HAL_BACK_BUFFER
+#endif
+
+/**
+ * Initialize the HAL
+ */
+void hagl_hal_init(hagl_backend_t *backend);
 
 #ifdef __cplusplus
 }
