@@ -63,7 +63,8 @@ flush(void *self)
 {
     /* Flush the whole back buffer. */
     mipi_display_write(0, 0, bb.width, bb.height, (uint8_t *) bb.buffer);
-    return bitmap_size(&bb);
+    /* TODO: should be returned above. */
+    return DISPLAY_WIDTH * DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8);
 }
 
 static void
@@ -114,13 +115,6 @@ hagl_hal_init(hagl_backend_t *backend)
         hagl_hal_debug("Using provided back buffer at address %p.\n", (void *) backend->buffer);
     }
 
-    memset(&bb, 0, sizeof(hagl_bitmap_t));
-    bb.width = DISPLAY_WIDTH;
-    bb.height = DISPLAY_HEIGHT;
-    bb.depth = DISPLAY_DEPTH;
-
-    bitmap_init(&bb, backend->buffer);
-
     backend->width = MIPI_DISPLAY_WIDTH;
     backend->height = MIPI_DISPLAY_HEIGHT;
     backend->depth = MIPI_DISPLAY_DEPTH;
@@ -130,8 +124,9 @@ hagl_hal_init(hagl_backend_t *backend)
     backend->vline = vline;
     backend->blit = blit;
     backend->scale_blit = scale_blit;
-
     backend->flush = flush;
+
+    hagl_bitmap_init(&bb, backend->width, backend->height, backend->depth, backend->buffer);
 }
 
 #endif /* HAGL_HAL_USE_DOUBLE_BUFFER */
