@@ -63,7 +63,8 @@ flush(void *self)
 {
     /* Flush the whole back buffer. */
     mipi_display_write(0, 0, bb.width, bb.height, (uint8_t *) bb.buffer);
-    return bitmap_size(&bb);
+    /* TODO: should be returned above. */
+    return DISPLAY_WIDTH * DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8);
 }
 
 static void
