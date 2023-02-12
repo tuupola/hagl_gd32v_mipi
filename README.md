@@ -9,7 +9,7 @@ HAL for HAGL graphics library for display drivers supporting the [MIPI Display C
 To use with an Nuclei SDK project you include this HAL and the [HAGL graphics library](https://github.com/tuupola/hagl) itself.
 
 ```
-$ cd lib
+$ cd external
 $ git submodule add https://github.com/tuupola/hagl_gd32v_mipi.git hagl_hal
 $ git submodule add https://github.com/tuupola/hagl.git
 ```
@@ -17,8 +17,8 @@ $ git submodule add https://github.com/tuupola/hagl.git
 Then in your Makefile include the new source and header files.
 
 ```
-SRCDIRS = . lib/hagl/src lib/hagl_hal/src
-INCDIRS = . lib/hagl/include lib/hagl_hal/include
+SRCDIRS = . external/hagl/src external/hagl_hal/src
+INCDIRS = . external/hagl/include external/hagl_hal/include
 ```
 
 By default the HAL uses single buffering. The buffer is the GRAM of the display driver chip. You can enable double buffering with flags.
@@ -39,8 +39,8 @@ An example project Makefile which both enables double buffering and overrides de
 ```
 TARGET = firmware
 NUCLEI_SDK_ROOT = ../nuclei-sdk
-SRCDIRS = . lib/hagl/src lib/hagl_hal/src
-INCDIRS = . lib/hagl/include lib/hagl_hal/include
+SRCDIRS = . external/hagl/src external/hagl_hal/src
+INCDIRS = . external/hagl/include external/hagl_hal/include
 COMMON_FLAGS += -DHAGL_HAL_USE_DOUBLE_BUFFER
 COMMON_FLAGS += -include ./hagl_user_config.h
 
